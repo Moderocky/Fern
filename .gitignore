@@ -1,0 +1,3 @@
+# Project exclude paths
+/fern-core/target/
+/fern-query/target/

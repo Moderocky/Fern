@@ -1,0 +1,10 @@
+
+root_key (
+    damage > 10,
+    health = 5.0,
+    name = "hello",
+    bean >=20,
+    strawberry <= 4.0,
+    sandwich !="blob",
+    flapjack == "flapjack",
+)
