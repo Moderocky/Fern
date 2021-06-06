@@ -40,4 +40,10 @@ public class ListHandler implements ValueHandler<FernList> {
     public FernList parse(String string) {
         throw new IllegalStateException("List handler cannot parse input without FernParser instance.");
     }
+    
+    @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof FernList;
+    }
+    
 }

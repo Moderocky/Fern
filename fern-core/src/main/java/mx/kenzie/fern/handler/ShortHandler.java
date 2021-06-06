@@ -12,4 +12,14 @@ public class ShortHandler implements ValueHandler<Short> {
             return Short.parseShort(string.substring(0, string.length() - 1));
         return Short.parseShort(string);
     }
+    
+    @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof Short;
+    }
+    
+    @Override
+    public String toString(Short thing) {
+        return thing + "L";
+    }
 }

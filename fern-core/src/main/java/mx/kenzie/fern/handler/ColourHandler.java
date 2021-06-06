@@ -12,4 +12,9 @@ public class ColourHandler implements ValueHandler<Color> {
     public Color parse(String string) {
         return Color.decode(string);
     }
+    
+    @Override
+    public String toString(Color thing) {
+        return "#" + Integer.toHexString(thing.getRGB()).substring(2);
+    }
 }

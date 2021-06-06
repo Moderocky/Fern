@@ -10,4 +10,18 @@ public interface ValueHandler<T> {
     }
     
     T parse(final String string);
+    
+    default boolean isOfType(Object thing) {
+        try {
+            T test = (T) thing;
+            return true;
+        } catch (Throwable ex) {
+            return false;
+        }
+    }
+    
+    default String toString(T thing) {
+        return thing + "";
+    }
+    
 }

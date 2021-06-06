@@ -22,4 +22,14 @@ public class StringHandler implements ValueHandler<String> {
         }
         return result;
     }
+    
+    @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof String;
+    }
+    
+    @Override
+    public String toString(String thing) {
+        return "\"" + thing + "\"";
+    }
 }

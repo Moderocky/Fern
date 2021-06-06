@@ -14,4 +14,9 @@ public class ClassHandler implements ValueHandler<Class<?>> {
             return null;
         }
     }
+    
+    @Override
+    public String toString(Class<?> thing) {
+        return thing.getName();
+    }
 }

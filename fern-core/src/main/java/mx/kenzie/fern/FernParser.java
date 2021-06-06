@@ -16,6 +16,13 @@ public interface FernParser extends Parser<FernBranch> {
     
     List<ValueHandler<?>> getHandlers();
     
+    default ValueHandler<?> getTypeHandler(final Object object) {
+        for (ValueHandler<?> handler : getHandlers()) {
+            if (handler.isOfType(object)) return handler;
+        }
+        throw new IllegalArgumentException("No handler matches: '" + object.getClass() + "'");
+    }
+    
     void parseMap(final String content, final FernBranch branch);
     
     mx.kenzie.fern.Fern parseElement(final String string);

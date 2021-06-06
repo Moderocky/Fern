@@ -92,4 +92,31 @@ public class FernParsingTest {
         assert tree.equals(second);
     }
     
+    @Test
+    public void escaping() {
+        final String string = """
+            label "blob :(",
+            thing "( ) ooo ( )",
+            box "lots ) of ()) brackets ((((()!)))()",
+            list [
+                (
+                    map "thingy :))",
+                    description "a number :)"
+                ),
+                (
+                    thing "(: happy face :( sad face"
+                )
+            ]
+            
+            """;
+        final FernBranch tree = parser.parse(string);
+        assert tree != null;
+        final FernList list = tree.get("list").getAsList();
+        assert list != null;
+        final FernBranch sub = list.get(0).getAsBranch();
+        assert sub != null;
+        assert sub.size() == 2;
+        assert sub.get("map").getRawValue().equals("thingy :))");
+    }
+    
 }

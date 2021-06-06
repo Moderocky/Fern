@@ -12,4 +12,9 @@ public class UUIDHandler implements ValueHandler<UUID> {
     public UUID parse(String string) {
         return UUID.fromString(string);
     }
+    
+    @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof UUID;
+    }
 }

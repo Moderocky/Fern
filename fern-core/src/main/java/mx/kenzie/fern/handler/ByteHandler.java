@@ -12,4 +12,10 @@ public class ByteHandler implements ValueHandler<Byte> {
             return Byte.parseByte(string.substring(0, string.length() - 1));
         return Byte.parseByte(string);
     }
+    
+    @Override
+    public String toString(Byte thing) {
+        return thing + "B";
+    }
+    
 }

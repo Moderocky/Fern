@@ -10,4 +10,9 @@ public class NullHandler implements ValueHandler<Void> {
     public Void parse(String string) {
         return null;
     }
+    
+    @Override
+    public boolean isOfType(Object thing) {
+        return thing == null;
+    }
 }

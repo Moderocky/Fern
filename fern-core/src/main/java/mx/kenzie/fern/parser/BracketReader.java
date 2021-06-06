@@ -29,16 +29,16 @@ public class BracketReader extends StringReader {
             else if (current == '\\') ignore = true;
             else if (current == '"' && !isSilly) isChonky = !isChonky;
             else if (current == '\'' && !isChonky) isSilly = !isSilly;
-            else if (current == ')') {
+            else if (current == ')' && !isChonky && !isSilly) {
                 depth--;
                 if (depth < 1) isBracket = false;
-            } else if (current == '(') {
+            } else if (current == '(' && !isChonky && !isSilly) {
                 depth++;
                 isBracket = true;
-            } else if (current == ']') {
+            } else if (current == ']' && !isChonky && !isSilly) {
                 depth--;
                 if (depth < 1) isBracket = false;
-            } else if (current == '[') {
+            } else if (current == '[' && !isChonky && !isSilly) {
                 depth++;
                 isBracket = true;
             }

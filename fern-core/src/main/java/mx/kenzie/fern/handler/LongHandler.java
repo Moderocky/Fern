@@ -12,4 +12,14 @@ public class LongHandler implements ValueHandler<Long> {
             return Long.parseLong(string.substring(0, string.length() - 1));
         return Long.parseLong(string);
     }
+    
+    @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof Long;
+    }
+    
+    @Override
+    public String toString(Long thing) {
+        return thing + "L";
+    }
 }

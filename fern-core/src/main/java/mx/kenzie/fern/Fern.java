@@ -45,4 +45,8 @@ public interface Fern {
     
     Object getRawValue();
     
+    default String toString(FernParser parser) {
+        return toString();
+    }
+    
 }

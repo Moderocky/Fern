@@ -22,4 +22,14 @@ public class MapHandler implements ValueHandler<FernBranch> {
     public FernBranch parse(String string) {
         throw new IllegalStateException("Map handler cannot parse input without FernParser instance.");
     }
+    
+    @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof FernBranch;
+    }
+    
+    @Override
+    public String toString(FernBranch thing) {
+        return thing.toString();
+    }
 }

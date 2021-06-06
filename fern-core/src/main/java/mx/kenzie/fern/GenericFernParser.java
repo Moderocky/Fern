@@ -79,12 +79,13 @@ public class GenericFernParser implements FernParser {
         final String key = reader.readUntil(' ');
         reader.rotate();
         final String remainder = reader.remainingString().trim();
-        if (remainder.startsWith("(") && remainder.endsWith(")")) {
-            final FernBranch child = new FernBranch();
-            branch.put(key, child);
-            parseMap(reader.readBracketPairInside('(', ')'), child);
-        } else {
-            branch.put(key, parseElement(remainder));
-        }
+        branch.put(key, parseElement(remainder));
+//        if (remainder.startsWith("(") && remainder.endsWith(")")) {
+//            final FernBranch child = new FernBranch();
+//            branch.put(key, child);
+//            parseMap(reader.readBracketPairInside('(', ')'), child);
+//        } else {
+//            branch.put(key, parseElement(remainder));
+//        }
     }
 }

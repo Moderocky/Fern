@@ -10,4 +10,5 @@ public class IntegerHandler implements ValueHandler<Integer> {
     public Integer parse(String string) {
         return Integer.parseInt(string);
     }
+    
 }

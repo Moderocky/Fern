@@ -13,4 +13,9 @@ public class DoubleHandler implements ValueHandler<Double> {
             return Double.parseDouble(string.substring(0, string.length() - 1));
         return Double.parseDouble(string);
     }
+    
+    @Override
+    public String toString(Double thing) {
+        return thing + "";
+    }
 }
