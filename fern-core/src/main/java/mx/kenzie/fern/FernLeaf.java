@@ -1,8 +1,10 @@
 package mx.kenzie.fern;
 
+import mx.kenzie.fern.handler.ValueHandler;
+
 import java.util.Objects;
 
-public record FernLeaf<T>(T value, String string) implements Fern {
+public record FernLeaf<T>(T value, ValueHandler<T> handler) implements Fern {
     
     @Override
     public boolean isLeaf() {
@@ -25,8 +27,13 @@ public record FernLeaf<T>(T value, String string) implements Fern {
     }
     
     @Override
+    public String toString(final int indent, final FernParser parser) {
+        return toString();
+    }
+    
+    @Override
     public String toString() {
-        return string;
+        return handler.toString(value);
     }
     
     public boolean is(Object thing) {

@@ -20,6 +20,6 @@ public class ShortHandler implements ValueHandler<Short> {
     
     @Override
     public String toString(Short thing) {
-        return thing + "L";
+        return thing + "S";
     }
 }

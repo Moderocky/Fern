@@ -35,6 +35,7 @@ public class GenericFernParser implements FernParser {
     }
     
     public void parseMap(final String content, final FernBranch branch) {
+        if (content.isBlank()) return;
         final String[] entries = unwrapCommaList(content);
         for (final String entry : entries) {
             parseEntry(entry.trim(), branch);
@@ -46,7 +47,7 @@ public class GenericFernParser implements FernParser {
             if (handler.matches(string)) {
                 final Object value = handler.parse(string, this);
                 if (value instanceof Fern fern) return fern;
-                return new mx.kenzie.fern.FernLeaf<>(value, string);
+                return new FernLeaf<>(value, (ValueHandler<Object>) handler);
             }
         }
         throw new IllegalStateException("Unable to parse unknown type: '" + string + "'");

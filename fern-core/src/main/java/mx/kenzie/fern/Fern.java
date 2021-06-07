@@ -45,7 +45,7 @@ public interface Fern {
     
     Object getRawValue();
     
-    default String toString(FernParser parser) {
+    default String toString(final int indent, final FernParser parser) {
         return toString();
     }
     

@@ -85,11 +85,10 @@ public class FernParsingTest {
     @Test
     public void serialisation() {
         final FernBranch tree = parser.parse(getClass().getClassLoader().getResourceAsStream("mapping_test.fern"));
-        final String string = tree.toString();
-        assert string
-            .equals("(another_map (boolean true,float 1.3F,list_a [\"value\", \"value\", \"value\"],list_b [\"value\", 10, \"value\"],list_c [[\"inner\", \"list\"], (inner \"map\")],void null),root_level_key \"value\",start_map (another_key 10.5,byte_value 2b,key \"value\",map ()))");
-        final FernBranch second = parser.parse(string.substring(1, string.length() - 1));
-        assert tree.equals(second);
+        final String string = tree.toRootString();
+        final FernBranch second = parser.parse(string);
+        assert tree.size() == second.size();
+        assert tree.toRootString(true).equals(second.toRootString(true));
     }
     
     @Test

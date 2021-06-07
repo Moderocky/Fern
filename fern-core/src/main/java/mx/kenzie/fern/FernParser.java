@@ -33,4 +33,8 @@ public interface FernParser extends Parser<FernBranch> {
     
     boolean matches(final Object object, final FernBranch query);
     
+    default String getIndentationUnit() {
+        return "    ";
+    }
+    
 }

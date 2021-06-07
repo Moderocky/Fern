@@ -22,7 +22,32 @@ public class FernList extends ArrayList<Fern> implements Fern {
     }
     
     @Override
+    public String toString(int indent, FernParser parser) {
+        if (this.isEmpty()) return "[]";
+        final List<String> strings = new ArrayList<>();
+        final StringBuilder builder = new StringBuilder();
+        final int child = indent + 1;
+        builder.append("[").append("\n");
+        for (Fern entry : this) {
+            final StringBuilder sub = new StringBuilder();
+            for (int i = 0; i < child; i++) {
+                sub.append(parser.getIndentationUnit());
+            }
+            sub.append(entry.toString(child, parser));
+            strings.add(sub.toString());
+        }
+        builder.append(String.join(",\n", strings))
+            .append("\n");
+        for (int i = 0; i < indent; i++) {
+            builder.append(parser.getIndentationUnit());
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+    
+    @Override
     public String toString() {
+        if (this.isEmpty()) return "[]";
         return super.toString();
     }
     

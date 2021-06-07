@@ -20,18 +20,61 @@ public class FernBranch extends TreeMap<String, mx.kenzie.fern.Fern> implements 
         return this;
     }
     
+    @Override
+    public String toString(final int indent, final FernParser parser) {
+        if (this.isEmpty()) return "()";
+        final List<String> strings = new ArrayList<>();
+        final StringBuilder builder = new StringBuilder();
+        final int child = indent + 1;
+        builder.append("(").append("\n");
+        for (Entry<String, mx.kenzie.fern.Fern> entry : this.entrySet()) {
+            final StringBuilder sub = new StringBuilder();
+            for (int i = 0; i < child; i++) {
+                sub.append(parser.getIndentationUnit());
+            }
+            sub.append(entry.getKey())
+                .append(" ")
+                .append(entry.getValue().toString(child, parser));
+            strings.add(sub.toString());
+        }
+        builder.append(String.join(",\n", strings))
+            .append("\n");
+        for (int i = 0; i < indent; i++) {
+            builder.append(parser.getIndentationUnit());
+        }
+        builder.append(")");
+        return builder.toString();
+    }
+    
     public String toRootString() {
-        final String string = this.toString();
-        return string.substring(1, string.length() - 1);
+        return toRootString(false);
+    }
+    
+    public String toRootString(final boolean compress) {
+        if (compress) {
+            final String string = this.toString();
+            return string.substring(1, string.length() - 1);
+        }
+        final FernParser parser = new GenericFernParser();
+        final List<String> strings = new ArrayList<>();
+        for (Entry<String, mx.kenzie.fern.Fern> entry : this.entrySet()) {
+            final StringBuilder sub = new StringBuilder();
+            sub.append(entry.getKey())
+                .append(" ")
+                .append(entry.getValue().toString(0, parser));
+            strings.add(sub.toString());
+        }
+        return String.join(",\n", strings);
     }
     
     @Override
     public String toString() {
+        if (this.isEmpty()) return "()";
         final List<String> strings = new ArrayList<>();
         for (Entry<String, mx.kenzie.fern.Fern> entry : this.entrySet()) {
             strings.add(entry.getKey() + " " + entry.getValue().toString());
         }
-        return "(" + String.join(",", strings) + ")";
+        return "(" + String.join(", ", strings) + ")";
     }
     
     public Entry<String, mx.kenzie.fern.Fern> getEntry(int index) {

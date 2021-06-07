@@ -10,4 +10,9 @@ public class FloatHandler implements ValueHandler<Float> {
     public Float parse(String string) {
         return Float.parseFloat(string.substring(0, string.length() - 1));
     }
+    
+    @Override
+    public String toString(Float thing) {
+        return thing + "F";
+    }
 }
