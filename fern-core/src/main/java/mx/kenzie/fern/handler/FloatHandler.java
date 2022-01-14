@@ -12,6 +12,11 @@ public class FloatHandler implements ValueHandler<Float> {
     }
     
     @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof Float;
+    }
+    
+    @Override
     public String toString(Float thing) {
         return thing + "F";
     }

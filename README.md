@@ -17,25 +17,43 @@ Fern ignores all whitespace, except for the single space that separates `key val
 Fern-Query - the second module - is one such extension, allowing simple logic and set-notation queries to be written in
 plain text, which can then be matched against Java objects.
 
+## Maven Information
+```xml
+<repository>
+    <id>kenzie</id>
+    <name>Kenzie's Repository</name>
+    <url>https://repo.kenzie.mx/releases</url>
+</repository>
+``` 
+
+```xml
+<dependency>
+    <groupId>mx.kenzie</groupId>
+    <artifactId>glass</artifactId>
+    <version>1.0.0</version>
+    <scope>compile</scope>
+</dependency>
+```
+
 #### Built-in Data Types
 
-| Type | Delimiter | Description |
-|------|-----------|-------------|
-|Comment|`//` or `/* */`|A comment. Stripped before parsing begins.|
-|Branch|`()`|A new sub-branch, a key-value comma-separated map.|
-|List|`[]`|A comma-separated list.|
-|String|`"text"`|Simple strings, supports both simple character escapes and multi-line content.|
-|Integer|`100`|Simple int-32.|
-|Long|`100L`|Simple int-64. Suffix is only required to differentiate from an integer in small numbers.|
-|Short|`100S`|A short. Suffix is always required.|
-|Double|`100.0D`|A double. Suffix is not required, unless the number is not a decimal.|
-|Float|`0.5F`|A floating point number. Suffix is always required.|
-|Byte|`13B`|A byte. Suffix is always required.|
-|Null|`null`|A null-value.|
-|Boolean|`true`|A boolean true/false value.|
-|Class|`a.b.c.ClassName$Nested`|A class name. Recognised via legal classpath.|
-|UUID|`7dcad757-3d50-4720-9e18-5bdf55537040`|A UUID. Recognised via legal representation.|
-|Colour|`#ff0000`|A Java `Color`, recognised via hex format.|
+| Type    | Delimiter                              | Description                                                                               |
+|---------|----------------------------------------|-------------------------------------------------------------------------------------------|
+| Comment | `//` or `/* */`                        | A comment. Stripped before parsing begins.                                                |
+| Branch  | `()`                                   | A new sub-branch, a key-value comma-separated map.                                        |
+| List    | `[]`                                   | A comma-separated list.                                                                   |
+| String  | `"text"`                               | Simple strings, supports both simple character escapes and multi-line content.            |
+| Integer | `100`                                  | Simple int-32.                                                                            |
+| Long    | `100L`                                 | Simple int-64. Suffix is only required to differentiate from an integer in small numbers. |
+| Short   | `100S`                                 | A short. Suffix is always required.                                                       |
+| Double  | `100.0D`                               | A double. Suffix is not required, unless the number is not a decimal.                     |
+| Float   | `0.5F`                                 | A floating point number. Suffix is always required.                                       |
+| Byte    | `13B`                                  | A byte. Suffix is always required.                                                        |
+| Null    | `null`                                 | A null-value.                                                                             |
+| Boolean | `true`                                 | A boolean true/false value.                                                               |
+| Class   | `a.b.c.ClassName$Nested`               | A class name. Recognised via legal classpath.                                             |
+| UUID    | `7dcad757-3d50-4720-9e18-5bdf55537040` | A UUID. Recognised via legal representation.                                              |
+| Colour  | `#ff0000`                              | A Java `Color`, recognised via hex format.                                                |
 
 Domain-specific data types can be added by custom parser implementations by adding a new `ValueHandler` - they require
 only a recognisable delimiter.

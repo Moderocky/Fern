@@ -10,4 +10,9 @@ public class BooleanHandler implements ValueHandler<Boolean> {
     public Boolean parse(String string) {
         return Boolean.parseBoolean(string.toLowerCase());
     }
+    
+    @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof Boolean;
+    }
 }

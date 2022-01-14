@@ -1,0 +1,12 @@
+test_map (
+    key "value",
+    int 1,
+    my "name",
+    b_map (),
+    blob ( ) ,
+    nested ( maps   ()),
+    is  (),
+    a [(),(pain ())]
+),
+
+says [(me null)]

@@ -14,6 +14,11 @@ public class ByteHandler implements ValueHandler<Byte> {
     }
     
     @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof Byte;
+    }
+    
+    @Override
     public String toString(Byte thing) {
         return thing + "B";
     }

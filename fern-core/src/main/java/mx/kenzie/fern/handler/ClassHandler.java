@@ -16,6 +16,11 @@ public class ClassHandler implements ValueHandler<Class<?>> {
     }
     
     @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof Class;
+    }
+    
+    @Override
     public String toString(Class<?> thing) {
         return thing.getName();
     }

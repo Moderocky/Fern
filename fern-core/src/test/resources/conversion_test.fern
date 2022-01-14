@@ -1,0 +1,16 @@
+root_level_key "value",
+start_map (key "value", another_key 10.5, byte_value 2b, map ()),
+another_map (
+    list_a ["value", "value", "value"],
+    list_b
+        -> "value"
+        -> 10
+        -> "value",
+    list_c [
+        ["inner", "list"],
+        (inner "map")
+    ],
+    boolean true,
+    void null, float 1.3F
+)
+

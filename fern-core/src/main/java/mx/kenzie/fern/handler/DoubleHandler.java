@@ -15,6 +15,11 @@ public class DoubleHandler implements ValueHandler<Double> {
     }
     
     @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof Double;
+    }
+    
+    @Override
     public String toString(Double thing) {
         return thing + "";
     }

@@ -55,7 +55,7 @@ public class FernParsingTest {
     
     @Test
     public void aspects() {
-        final FernBranch tree = parser.parse(getClass().getClassLoader().getResourceAsStream("mapping_test.fern"));
+        final FernBranch tree = parser.parse(getClass().getClassLoader().getResourceAsStream("conversion_test.fern"));
         assert tree != null;
         assert tree.isBranch();
         assert !tree.isLeaf();
@@ -84,7 +84,7 @@ public class FernParsingTest {
     
     @Test
     public void serialisation() {
-        final FernBranch tree = parser.parse(getClass().getClassLoader().getResourceAsStream("mapping_test.fern"));
+        final FernBranch tree = parser.parse(getClass().getClassLoader().getResourceAsStream("conversion_test.fern"));
         final String string = tree.toRootString();
         final FernBranch second = parser.parse(string);
         assert tree.size() == second.size();

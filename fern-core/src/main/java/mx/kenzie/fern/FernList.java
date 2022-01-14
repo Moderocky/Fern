@@ -1,5 +1,6 @@
 package mx.kenzie.fern;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -82,5 +83,19 @@ public class FernList extends ArrayList<Fern> implements Fern {
             list.add(fern.getRawValue());
         }
         return list;
+    }
+    
+    public <Type> Type[] arrayConversion(final Class<Type> cls) {
+        final Type[] array = (Type[]) Array.newInstance(cls, this.size());
+        int x = 0;
+        for (Fern fern : this) {
+            array[x] = (Type) fern.getRawValue();
+            x++;
+        }
+        return array;
+    }
+    
+    public <Type> Type[] arrayConversion(final Type[] template) {
+        return this.arrayConversion((Class<Type>) template.getClass().getComponentType());
     }
 }

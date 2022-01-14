@@ -14,6 +14,11 @@ public class ColourHandler implements ValueHandler<Color> {
     }
     
     @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof Color;
+    }
+    
+    @Override
     public String toString(Color thing) {
         return "#" + Integer.toHexString(thing.getRGB()).substring(2);
     }

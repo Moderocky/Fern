@@ -11,4 +11,8 @@ public class IntegerHandler implements ValueHandler<Integer> {
         return Integer.parseInt(string);
     }
     
+    @Override
+    public boolean isOfType(Object thing) {
+        return thing instanceof Integer;
+    }
 }

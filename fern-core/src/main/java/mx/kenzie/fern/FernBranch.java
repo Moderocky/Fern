@@ -51,11 +51,15 @@ public class FernBranch extends TreeMap<String, mx.kenzie.fern.Fern> implements 
     }
     
     public String toRootString(final boolean compress) {
+        final FernParser parser = new GenericFernParser();
+        return this.toRootString(compress, parser);
+    }
+    
+    public String toRootString(final boolean compress, final FernParser parser) {
         if (compress) {
             final String string = this.toString();
             return string.substring(1, string.length() - 1);
         }
-        final FernParser parser = new GenericFernParser();
         final List<String> strings = new ArrayList<>();
         for (Entry<String, mx.kenzie.fern.Fern> entry : this.entrySet()) {
             final StringBuilder sub = new StringBuilder();
@@ -64,7 +68,7 @@ public class FernBranch extends TreeMap<String, mx.kenzie.fern.Fern> implements 
                 .append(entry.getValue().toString(0, parser));
             strings.add(sub.toString());
         }
-        return String.join(",\n", strings);
+        return String.join(",\n", strings).trim();
     }
     
     @Override
@@ -95,11 +99,11 @@ public class FernBranch extends TreeMap<String, mx.kenzie.fern.Fern> implements 
         return list.toArray(new String[0]);
     }
     
-    public Map<String, Object> toLinearMap() {
-        final Map<String, Object> map = new HashMap<>();
+    public Map<String, Fern> toLinearMap() {
+        final Map<String, Fern> map = new HashMap<>();
         for (Entry<String, mx.kenzie.fern.Fern> entry : entrySet()) {
             if (entry.getValue() instanceof FernBranch branch) {
-                for (Entry<String, Object> child : branch.toLinearMap().entrySet()) {
+                for (Entry<String, Fern> child : branch.toLinearMap().entrySet()) {
                     map.put(entry.getKey() + "/" + child.getKey(), child.getValue());
                 }
             } else {
