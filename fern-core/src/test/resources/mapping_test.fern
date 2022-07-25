@@ -1,8 +1,0 @@
-Alice (
-    age 29,
-    alive true,
-    name "Bill"
-),
-Human (
-    thingy 33.2
-)

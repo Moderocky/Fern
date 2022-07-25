@@ -1,0 +1,13 @@
+hello "there"
+number 5
+float 4.05F byte 2B short 32S double 66.002D
+long 1000000000000L
+list [ "hello" "there" ]
+map ( key "value" key "value" )
+map (
+    hello "there"
+    map ( number 1 )
+    list [
+        "bla" "bla" "bla"
+    ]
+)
