@@ -8,7 +8,7 @@ public class ReadingTest {
     
     @Test
     public void basic() {
-        try (final Fern fern = Fern.read("""
+        try (final Fern fern = Fern.in("""
             hello "there" general "kenobi"
             """)) {
             final FernMap map = fern.readMap();
@@ -18,7 +18,7 @@ public class ReadingTest {
     
     @Test
     public void integers() {
-        try (final Fern fern = Fern.read("""
+        try (final Fern fern = Fern.in("""
             thing 1 number 2
             """)) {
             final FernMap map = fern.readMap();
@@ -28,7 +28,7 @@ public class ReadingTest {
     
     @Test
     public void floats() {
-        try (final Fern fern = Fern.read("""
+        try (final Fern fern = Fern.in("""
             thing 1F number 2.4F
             """)) {
             final FernMap map = fern.readMap();
@@ -39,7 +39,7 @@ public class ReadingTest {
     
     @Test
     public void decimals() {
-        try (final Fern fern = Fern.read("""
+        try (final Fern fern = Fern.in("""
             thing 1D number 2.4 byte 1B short 32S
             """)) {
             final FernMap map = fern.readMap();
@@ -51,7 +51,7 @@ public class ReadingTest {
     
     @Test
     public void booleans() {
-        try (final Fern fern = Fern.read("""
+        try (final Fern fern = Fern.in("""
             true true false false
             """)) {
             final FernMap map = fern.readMap();
@@ -63,7 +63,7 @@ public class ReadingTest {
     
     @Test
     public void nulls() {
-        try (final Fern fern = Fern.read("""
+        try (final Fern fern = Fern.in("""
             null null
             """)) {
             final FernMap map = fern.readMap();
@@ -74,7 +74,7 @@ public class ReadingTest {
     
     @Test
     public void map() {
-        try (final Fern fern = Fern.read("""
+        try (final Fern fern = Fern.in("""
             map ( hello "there" general "kenobi" ) number 1
             """)) {
             final FernMap map = fern.readMap();
@@ -84,7 +84,7 @@ public class ReadingTest {
     
     @Test
     public void list() {
-        try (final Fern fern = Fern.read("""
+        try (final Fern fern = Fern.in("""
             list [ 1 2 "hello" "there" ] number 1
             """)) {
             final FernMap map = fern.readMap();
