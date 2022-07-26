@@ -29,11 +29,11 @@ public class ReadingTest {
     @Test
     public void floats() {
         try (final Fern fern = Fern.in("""
-            thing 1F number 2.4F
+            thing 1F number -2.4F
             """)) {
             final FernMap map = fern.readMap();
             assert map.get("thing") instanceof Float;
-            assert map.toString().equals("{number=2.4, thing=1.0}") : map;
+            assert map.toString().equals("{number=-2.4, thing=1.0}") : map;
         }
     }
     

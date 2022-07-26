@@ -21,7 +21,7 @@ public class NumberHandler implements ValueHandler<Number> {
         else if (c == 'S' || c == 's') this.s = this.tail = true;
         else if (c == 'B' || c == 'b') this.b = this.tail = true;
         else if (c == ']' || c == ')') return false;
-        else if (!Character.isDigit(c))
+        else if (!Character.isDigit(c) && c != '-')
             throw new FernException("Unexpected character in the bagging area " + builder + " .. " + c);
         builder.append(c);
         return true;

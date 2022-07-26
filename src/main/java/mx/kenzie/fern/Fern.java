@@ -33,6 +33,7 @@ public class Fern implements Closeable {
         DEFAULT_HANDLERS.put('t', booleans);
         DEFAULT_HANDLERS.put('f', booleans);
         final Supplier<ValueHandler<?>> numbers = NumberHandler::new;
+        DEFAULT_HANDLERS.put('-', numbers);
         DEFAULT_HANDLERS.put('1', numbers);
         DEFAULT_HANDLERS.put('2', numbers);
         DEFAULT_HANDLERS.put('3', numbers);
@@ -212,7 +213,7 @@ public class Fern implements Closeable {
         if (outerBrackets) while (this.readChar() != '[') ;
         return this.read(new ArrayList<>());
     }
-
+    
     public <IList extends List<Object>> IList read(IList list) {
         if (reader == null) throw new FernException("No input provided.");
         this.state = EXPECT_VALUE;
@@ -228,7 +229,7 @@ public class Fern implements Closeable {
                 break;
             }
             this.value = new StringBuilder();
-            if (x == '(') list.add(this.readMap()); // todo
+            if (x == '(') list.add(this.readMap());
             else if (x == '[') list.add(this.read(new ArrayList<>()));
             else {
                 if (!handlers.containsKey((char) x))
