@@ -75,20 +75,20 @@ public class ReadingTest {
     @Test
     public void map() {
         try (final Fern fern = Fern.in("""
-            map ( hello "there" general "kenobi" ) number 1
+            map (hello "there" general "kenobi" number 1)
             """)) {
             final FernMap map = fern.readMap();
-            assert map.toString().equals("{number=1, map={general=kenobi, hello=there}}") : map;
+            assert map.toString().equals("{map={general=kenobi, number=1, hello=there}}") : map;
         }
     }
     
     @Test
     public void list() {
         try (final Fern fern = Fern.in("""
-            list [ 1 2 "hello" "there" ] number 1
+            list [1 2 "hello" "there" 5] number 1
             """)) {
             final FernMap map = fern.readMap();
-            assert map.toString().equals("{number=1, list=[1, 2, hello, there]}") : map;
+            assert map.toString().equals("{number=1, list=[1, 2, hello, there, 5]}") : map;
         }
     }
     

@@ -14,25 +14,7 @@ the general parser or framework to build handlers for custom data types.
 
 Fern ignores all whitespace, except for the single character that separates entities.
 
-
-## Maven Information
-```xml
-<repository>
-    <id>kenzie</id>
-    <name>Kenzie's Repository</name>
-    <url>https://repo.kenzie.mx/releases</url>
-</repository>
-``` 
-
-```xml
-<dependency>
-    <groupId>mx.kenzie</groupId>
-    <artifactId>fern</artifactId>
-    <version>2.0.0</version>
-</dependency>
-```
-
-#### Built-in Data Types
+## Data Types
 
 | Type    | Delimiter                              | Description                                                                               |
 |---------|----------------------------------------|-------------------------------------------------------------------------------------------|
@@ -51,7 +33,7 @@ Fern ignores all whitespace, except for the single character that separates enti
 Domain-specific data types can be added by custom parser implementations by adding a new `ValueHandler` - they require
 only a recognisable starting character.
 
-#### Examples
+## Examples
 
 Basic uses of types.
 
@@ -88,4 +70,30 @@ their heart's content.
 ```fern
 map ( key "value" thing 66 ) list [ 1 2 3 ]
 ```
+
+## Maven Information
+```xml
+<repository>
+    <id>kenzie</id>
+    <name>Kenzie's Repository</name>
+    <url>https://repo.kenzie.mx/releases</url>
+</repository>
+``` 
+
+```xml
+<dependency>
+    <groupId>mx.kenzie</groupId>
+    <artifactId>fern</artifactId>
+    <version>2.0.0</version>
+</dependency>
+```
+
+## Adding Types
+
+Fern is built to support additional value types for domain-specific use.
+
+A type must have a recognisable starting character (e.g. `.`) and a recognisable end.
+Types are responsible for recognising their own end, so this may not be a single distinct character.
+
+
 

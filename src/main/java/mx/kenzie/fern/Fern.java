@@ -212,8 +212,12 @@ public class Fern implements Closeable {
     public <IList extends List<Object>> IList read(IList list) {
         if (reader == null) throw new FernException("No input provided.");
         this.state = EXPECT_VALUE;
+        int x = 0;
         do {
-            int x;
+            if (x == -1 || x == ']') {
+                this.state = END;
+                break;
+            }
             while (((x = this.readChar()) != -1) && Character.isWhitespace(x)) ; // whitespace or end
             if (x == -1 || x == ']') {
                 this.state = END;

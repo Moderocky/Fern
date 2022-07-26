@@ -1,0 +1,75 @@
+scopeName: 'source.fern'
+fileTypes: [
+    'fern'
+]
+name: 'Fern'
+limitLineLength: true
+
+folds: [
+    {
+        type: 'block',
+        start: {type: '"("', index: 0},
+        end: {type: '")"', index: 1}
+    }
+    {
+        type: 'block',
+        start: {type: '"["', index: 0},
+        end: {type: '"]"', index: 1}
+    }
+]
+
+patterns: [
+    { include: '#value' }
+    { include: '#key' }
+]
+
+repository:
+    key: patterns: [
+        {
+            match: "(?<=\\s|^)\\b(\\S+?)(?=\\s)"
+            captures:
+                1: name: 'variable.other'
+        }
+    ]
+    value: patterns: [
+        {
+            match: "\\b-?\\d+[DdFf]"
+            captures:
+                0: name: 'constant.numeric.decimal'
+        }
+        {
+            match: "\\b-?\\d+\\.\\d+[DdFf]?"
+            captures:
+                0: name: 'constant.numeric.decimal'
+        }
+        {
+            match: "\\b-?\\d+[LlSsBb]?"
+            captures:
+                0: name: 'constant.numeric'
+        }
+        {
+            match: "\\b-?\\d+[LlSsBb]?"
+            captures:
+                0: name: 'constant.numeric'
+        }
+        {
+            match: "(null|true|false)"
+            captures:
+                0: name: 'keyword.control'
+        }
+        {
+            begin: '"'
+            beginCaptures:
+                0: name: 'punctuation.definition.string.begin'
+            end: '"'
+            endCaptures:
+                0: name: 'punctuation.definition.string.end'
+            name: 'string.quoted.double'
+            patterns: [
+                {
+                    match: '\\\\.'
+                    name: 'constant.character.escape'
+                }
+            ]
+        }
+    ]

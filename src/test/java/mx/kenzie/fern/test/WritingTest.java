@@ -19,4 +19,19 @@ public class WritingTest {
         assert value.equals("number 10.455D blob null test 2.0F "): value;
     }
     
+    @Test
+    public void pretty() {
+        class Thing { final String hello = "there", general = "kenobi"; }
+        class Test { final double number = 10.455; final float test = 2; final Thing first = null, second = new Thing(); }
+        final String value = Fern.out(new Test(), "  ");
+        assert value.equals("""
+            number 10.455D
+            test 2.0F
+            first null
+            second (
+              general "kenobi"
+              hello "there"
+            )"""): value;
+    }
+    
 }

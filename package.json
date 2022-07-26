@@ -1,0 +1,17 @@
+{
+  "name": "fern",
+  "version": "2.0.0",
+  "description": "A minimalist storage and config file format.",
+  "keywords": [
+    "Fern",
+    "config",
+    "configuration",
+    "file"
+  ],
+  "repository": "https://github.com/Moderocky/Fern",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {}
+}
