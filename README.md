@@ -46,8 +46,8 @@ spouse null
 likes [ "chicken" "pasta" "bacon" ]
 dislikes [ "fish" "ice cream" 74 ]
 education (   
-    school "Hartlepool Secondary School",
-    college "Wisham College",
+    school "Hartlepool Secondary School"
+    college "Wisham College"
     university null
 )
 
