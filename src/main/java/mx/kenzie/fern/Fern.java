@@ -151,8 +151,12 @@ public class Fern implements Closeable {
     public <IMap extends Map<String, Object>> IMap read(IMap map) {
         if (reader == null) throw new FernException("No input provided.");
         this.state = EXPECT_KEY;
+        int x = 0;
         do {
-            int x;
+            if (x == -1 || x == ')') {
+                this.state = END;
+                break;
+            }
             while (((x = this.readChar()) != -1) && Character.isWhitespace(x)) ; // whitespace or end
             if (x == -1 || x == ')') {
                 this.state = END;
@@ -224,7 +228,7 @@ public class Fern implements Closeable {
                 break;
             }
             this.value = new StringBuilder();
-            if (x == '(') list.add(this.readMap());
+            if (x == '(') list.add(this.readMap()); // todo
             else if (x == '[') list.add(this.read(new ArrayList<>()));
             else {
                 if (!handlers.containsKey((char) x))

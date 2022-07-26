@@ -75,10 +75,11 @@ public class ReadingTest {
     @Test
     public void map() {
         try (final Fern fern = Fern.in("""
-            map (hello "there" general "kenobi" number 1)
+            map (hello "there" general "kenobi" number 1F)
             """)) {
             final FernMap map = fern.readMap();
-            assert map.toString().equals("{map={general=kenobi, number=1, hello=there}}") : map;
+            assert map.getMap("map").get("number") instanceof Float;
+            assert map.toString().equals("{map={general=kenobi, number=1.0, hello=there}}") : map;
         }
     }
     
@@ -89,6 +90,16 @@ public class ReadingTest {
             """)) {
             final FernMap map = fern.readMap();
             assert map.toString().equals("{number=1, list=[1, 2, hello, there, 5]}") : map;
+        }
+    }
+    
+    @Test
+    public void listMaps() {
+        try (final Fern fern = Fern.in("""
+            empty [] empty () list [(test 1) (test 2)]
+            """)) {
+            final FernMap map = fern.readMap();
+            assert map.toString().equals("{list=[{test=1}, {test=2}], empty={}}") : map;
         }
     }
     
