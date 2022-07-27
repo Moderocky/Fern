@@ -271,6 +271,7 @@ public class Fern implements Closeable {
             if (pretty) for (int i = 0; i < level; i++) this.writeString(indent);
             for (final char c : Objects.toString(entry.getKey()).toCharArray()) {
                 if (Character.isWhitespace(c)) this.writeChar('\\');
+                else if (c == '\\') this.writeChar('\\');
                 this.writeChar(c);
             }
             this.writeChar(separator);
