@@ -57,7 +57,6 @@ public class Fern implements Closeable {
     protected final Set<ValueHandler<?>> reverse = new HashSet<>(DEFAULT_REVERSE);
     protected int state;
     protected transient StringBuilder key, value;
-    //<editor-fold desc="Writers" defaultstate="collapsed">
     protected String indent;
     protected int level;
     
@@ -76,9 +75,7 @@ public class Fern implements Closeable {
         this.reader = reader;
         this.writer = writer;
     }
-    //</editor-fold>
     
-    //<editor-fold desc="Input" defaultstate="collapsed">
     public static Fern in(File file) throws FileNotFoundException {
         return new Fern(new FileReader(file), null);
     }
@@ -87,11 +84,9 @@ public class Fern implements Closeable {
         return new Fern(new ByteArrayInputStream(string.getBytes()), null);
     }
     
-    //<editor-fold desc="Output" defaultstate="collapsed">
     public static Fern out(File file) throws IOException {
         return new Fern(null, new FileWriter(file));
     }
-    //</editor-fold>
     
     public static String out(Object object, String indent) {
         final StringWriter writer = new StringWriter();
@@ -109,7 +104,6 @@ public class Fern implements Closeable {
         return writer.toString();
     }
     
-    //<editor-fold desc="Transfer" defaultstate="collapsed">
     public static void trans(Map<?, ?> map, OutputStream stream) {
         final Fern fern = new Fern(null, new OutputStreamWriter(stream));
         fern.write(map, null, 0);
@@ -131,9 +125,6 @@ public class Fern implements Closeable {
             throw new FernException(ex);
         }
     }
-    //</editor-fold>
-    
-    //<editor-fold desc="Readers" defaultstate="collapsed">
     
     public static void trans(InputStream stream, Map<String, Object> map) {
         final Fern fern = new Fern(new InputStreamReader(stream), null);
@@ -177,7 +168,7 @@ public class Fern implements Closeable {
                 }
                 case EXPECT_VALUE -> {
                     this.value = new StringBuilder();
-                    if (x == '(') map.put(key.toString(), this.readMap());
+                    if (x == '(') map.put(key.toString(), this.read(map instanceof HashMap<?,?> ? new FernMap() : new TreeMap<>()));
                     else if (x == '[') map.put(key.toString(), this.read(new ArrayList<>()));
                     else {
                         if (!handlers.containsKey((char) x))
@@ -207,7 +198,6 @@ public class Fern implements Closeable {
     public List<Object> readList() {
         return this.readList(false);
     }
-    //</editor-fold>
     
     public List<Object> readList(boolean outerBrackets) {
         if (outerBrackets) while (this.readChar() != '[') ;
@@ -327,9 +317,7 @@ public class Fern implements Closeable {
         } else throw new FernException("No handler registered for '" + value.getClass().getSimpleName() + "'");
     }
     
-    //</editor-fold>
     
-    //<editor-fold desc="Converters" defaultstate="collapsed">
     protected void write(Object object, Class<?> type, Map<String, Object> map) {
         final Set<Field> fields = new HashSet<>();
         fields.addAll(List.of(type.getDeclaredFields()));
@@ -465,6 +453,7 @@ public class Fern implements Closeable {
         return this.toArray(new Object[0]);
     }
     
+    @SuppressWarnings("unchecked")
     public <Component> Component[] toArray(Class<Component> type) {
         return (Component[]) this.toArray(Array.newInstance(type, 0));
     }
@@ -578,7 +567,6 @@ public class Fern implements Closeable {
             else for (final Object object : objects) list.add(this.deconstructSimple(object, component));
         }
     }
-    //</editor-fold>
     
     protected void writeChar(char c) {
         try {
