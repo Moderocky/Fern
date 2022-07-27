@@ -18,6 +18,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Fern implements Closeable {
     
@@ -59,6 +61,8 @@ public class Fern implements Closeable {
     protected transient StringBuilder key, value;
     protected String indent;
     protected int level;
+    
+    protected char separator = ' ';
     
     public Fern(InputStream input, OutputStream output) {
         if (input != null) reader = new InputStreamReader(input);
@@ -136,6 +140,11 @@ public class Fern implements Closeable {
         list.addAll(fern.readList(true));
     }
     
+    public Fern setSeparator(char c) {
+        this.separator = c;
+        return this;
+    }
+    
     public FernMap readMap() {
         return this.read(new FernMap());
     }
@@ -157,11 +166,14 @@ public class Fern implements Closeable {
             switch (state) {
                 case EXPECT_KEY -> {
                     this.key = new StringBuilder();
+                    boolean escape = false;
                     while (true) {
-                        this.key.append((char) x);
+                        if (!escape) this.key.append((char) x);
                         x = this.readChar();
                         if (x == -1) throw new FernException("Reached end of data reading key '" + key + "...'");
-                        else if (Character.isWhitespace(x)) break;
+                        else if (x == '\\' && !escape) escape = true;
+                        else if (!escape && Character.isWhitespace(x)) break;
+                        else escape = false;
                     }
                     if (key.length() < 1) throw new FernException("Found a zero-length key.");
                     this.state = EXPECT_VALUE;
@@ -255,13 +267,16 @@ public class Fern implements Closeable {
         boolean first = true;
         for (final Map.Entry<?, ?> entry : map.entrySet()) {
             if (pretty && !first) this.writeString(System.lineSeparator());
+            else if (!first) this.writeChar(separator);
             if (pretty) for (int i = 0; i < level; i++) this.writeString(indent);
-            this.writeString(Objects.toString(entry.getKey()));
-            this.writeChar(' ');
+            for (final char c : Objects.toString(entry.getKey()).toCharArray()) {
+                if (Character.isWhitespace(c)) this.writeChar('\\');
+                this.writeChar(c);
+            }
+            this.writeChar(separator);
             final Object value = entry.getValue();
             first = false;
             this.writeValue(value);
-            if (!pretty) this.writeChar(' ');
         }
     }
     
@@ -280,7 +295,7 @@ public class Fern implements Closeable {
             if (pretty) for (int i = 0; i < level; i++) this.writeString(indent);
             first = false;
             this.writeValue(value);
-            if (!pretty) this.writeChar(' ');
+            if (!pretty) this.writeChar(separator);
         }
     }
     
@@ -294,23 +309,23 @@ public class Fern implements Closeable {
         }
         if (value instanceof Map<?, ?> child) {
             this.writeChar('(');
-            if (!pretty) this.writeChar(' ');
+            if (!pretty) this.writeChar(separator);
             else this.writeString(System.lineSeparator());
             this.level++;
             this.write(child);
             this.level--;
-            if (!pretty) this.writeChar(' ');
+            if (!pretty) this.writeChar(separator);
             else this.writeString(System.lineSeparator());
             if (pretty) for (int i = 0; i < level; i++) this.writeString(indent);
             this.writeChar(')');
         } else if (value instanceof List<?> child) {
             this.writeChar('[');
-            if (!pretty) this.writeChar(' ');
+            if (!pretty) this.writeChar(separator);
             else this.writeString(System.lineSeparator());
             this.level++;
             this.write(child);
             this.level--;
-            if (!pretty) this.writeChar(' ');
+            if (!pretty) this.writeChar(separator);
             else this.writeString(System.lineSeparator());
             if (pretty) for (int i = 0; i < level; i++) this.writeString(indent);
             this.writeChar(']');
