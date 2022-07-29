@@ -12,7 +12,7 @@ public class ReadingTest {
             hello "there" general "kenobi"
             """)) {
             final FernMap map = fern.readMap();
-            assert map.toString().equals("{general=kenobi, hello=there}") : map;
+            assert map.toString().equals("{hello=there, general=kenobi}") : map;
         }
     }
     
@@ -22,7 +22,7 @@ public class ReadingTest {
             thing 1 number 2
             """)) {
             final FernMap map = fern.readMap();
-            assert map.toString().equals("{number=2, thing=1}") : map;
+            assert map.toString().equals("{thing=1, number=2}") : map;
         }
     }
     
@@ -33,7 +33,7 @@ public class ReadingTest {
             """)) {
             final FernMap map = fern.readMap();
             assert map.get("thing") instanceof Float;
-            assert map.toString().equals("{number=-2.4, thing=1.0}") : map;
+            assert map.toString().equals("{thing=1.0, number=-2.4}") : map;
         }
     }
     
@@ -45,19 +45,19 @@ public class ReadingTest {
             final FernMap map = fern.readMap();
             assert map.get("thing") instanceof Double;
             assert map.get("number") instanceof Double;
-            assert map.toString().equals("{number=2.4, byte=1, short=32, thing=1.0}") : map;
+            assert map.toString().equals("{thing=1.0, number=2.4, byte=1, short=32}") : map;
         }
     }
     
     @Test
     public void booleans() {
         try (final Fern fern = Fern.in("""
-            true true false false
+            true true false false map (value true)
             """)) {
             final FernMap map = fern.readMap();
             assert map.get("true") instanceof Boolean;
             assert map.get("false") instanceof Boolean;
-            assert map.toString().equals("{true=true, false=false}") : map;
+            assert map.toString().equals("{true=true, false=false, map={value=true}}") : map;
         }
     }
     
@@ -79,7 +79,7 @@ public class ReadingTest {
             """)) {
             final FernMap map = fern.readMap();
             assert map.getMap("map").get("number") instanceof Float;
-            assert map.toString().equals("{map={general=kenobi, number=1.0, hello=there}}") : map;
+            assert map.toString().equals("{map={hello=there, general=kenobi, number=1.0}}") : map;
         }
     }
     
@@ -89,7 +89,7 @@ public class ReadingTest {
             list [1 2 "hello" "there" 5] number 1
             """)) {
             final FernMap map = fern.readMap();
-            assert map.toString().equals("{number=1, list=[1, 2, hello, there, 5]}") : map;
+            assert map.toString().equals("{list=[1, 2, hello, there, 5], number=1}") : map;
         }
     }
     
@@ -99,7 +99,7 @@ public class ReadingTest {
             empty [] empty () list [(test 1) (test 2)]
             """)) {
             final FernMap map = fern.readMap();
-            assert map.toString().equals("{list=[{test=1}, {test=2}], empty={}}") : map;
+            assert map.toString().equals("{empty={}, list=[{test=1}, {test=2}]}") : map;
         }
     }
     

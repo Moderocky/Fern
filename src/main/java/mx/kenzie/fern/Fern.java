@@ -266,18 +266,26 @@ public class Fern implements Closeable {
         final boolean pretty = indent != null;
         boolean first = true;
         for (final Map.Entry<?, ?> entry : map.entrySet()) {
-            if (pretty && !first) this.writeString(System.lineSeparator());
-            else if (!first) this.writeChar(separator);
-            if (pretty) for (int i = 0; i < level; i++) this.writeString(indent);
-            for (final char c : Objects.toString(entry.getKey()).toCharArray()) {
-                if (Character.isWhitespace(c)) this.writeChar('\\');
-                else if (c == '\\') this.writeChar('\\');
-                this.writeChar(c);
-            }
-            this.writeChar(separator);
-            final Object value = entry.getValue();
+            this.writeEntry(entry, pretty, first);
             first = false;
-            this.writeValue(value);
+        }
+    }
+    
+    protected void writeEntry(Map.Entry<?, ?> entry, boolean pretty, boolean first) {
+        if (pretty && !first) this.writeString(System.lineSeparator());
+        else if (!first) this.writeChar(separator);
+        if (pretty) for (int i = 0; i < level; i++) this.writeString(indent);
+        this.writeKey(Objects.toString(entry.getKey()));
+        this.writeChar(separator);
+        final Object value = entry.getValue();
+        this.writeValue(value);
+    }
+    
+    protected void writeKey(String key) {
+        for (final char c : key.toCharArray()) {
+            if (Character.isWhitespace(c)) this.writeChar('\\');
+            else if (c == '\\') this.writeChar('\\');
+            this.writeChar(c);
         }
     }
     
@@ -294,9 +302,9 @@ public class Fern implements Closeable {
         for (final Object value : list) {
             if (pretty && !first) this.writeString(System.lineSeparator());
             if (pretty) for (int i = 0; i < level; i++) this.writeString(indent);
+            else if (!first) this.writeChar(separator);
             first = false;
             this.writeValue(value);
-            if (!pretty) this.writeChar(separator);
         }
     }
     
@@ -308,8 +316,16 @@ public class Fern implements Closeable {
             this.writeString(handler.undo(value));
             return;
         }
+        this.writeBranch(value, pretty);
+    }
+    
+    protected void writeBranch(Object value, boolean pretty) {
         if (value instanceof Map<?, ?> child) {
             this.writeChar('(');
+            if (child.isEmpty()) {
+                this.writeChar(')');
+                return;
+            }
             if (!pretty) this.writeChar(separator);
             else this.writeString(System.lineSeparator());
             this.level++;
@@ -321,6 +337,10 @@ public class Fern implements Closeable {
             this.writeChar(')');
         } else if (value instanceof List<?> child) {
             this.writeChar('[');
+            if (child.isEmpty()) {
+                this.writeChar(']');
+                return;
+            }
             if (!pretty) this.writeChar(separator);
             else this.writeString(System.lineSeparator());
             this.level++;

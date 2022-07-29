@@ -1,9 +1,9 @@
 package mx.kenzie.fern.data;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class FernMap extends HashMap<String, Object> {
+public class FernMap extends LinkedHashMap<String, Object> {
     public FernMap(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
     }

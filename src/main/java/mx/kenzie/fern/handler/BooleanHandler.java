@@ -12,7 +12,7 @@ public class BooleanHandler implements ValueHandler<Boolean> {
     @Override
     public boolean accept(StringBuilder builder, char c) {
         this.value = (c == 't');
-        if (Character.isWhitespace(c)) return false;
+        if (c == ')' || c == ']' || Character.isWhitespace(c)) return false;
         builder.append(c);
         return true;
     }

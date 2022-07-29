@@ -12,14 +12,14 @@ public class WritingTest {
     public void simple() {
         class Test { final String hello = "there", general = "kenobi"; }
         final String value = Fern.out(new Test(), null);
-        assert value.equals("general \"kenobi\" hello \"there\""): value;
+        assert value.equals("hello \"there\" general \"kenobi\""): value;
     }
     
     @Test
     public void complex() {
         class Test { final double number = 10.455; final float test = 2; final Object blob = null; }
         final String value = Fern.out(new Test(), null);
-        assert value.equals("number 10.455D blob null test 2.0F"): value;
+        assert value.equals("blob null number 10.455D test 2.0F"): value;
     }
     
     @Test
@@ -30,11 +30,15 @@ public class WritingTest {
         assert value.equals("""
             number 10.455D
             test 2.0F
-            first null
             second (
               general "kenobi"
               hello "there"
-            )"""): value;
+            )
+            first null"""): value;
+        final String small = Fern.out(new Test(), null);
+        assert small.equals("number 10.455D test 2.0F second ( general \"kenobi\" hello \"there\" ) first null"): small;
+        final String list = Fern.out(new Object() { final int[] numbers = {1,2,6,4}; }, null);
+        assert list.equals("numbers [ 1 2 6 4 ]"): list;
     }
     
     @Test
