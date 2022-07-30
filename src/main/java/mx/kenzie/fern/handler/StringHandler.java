@@ -35,7 +35,6 @@ public class StringHandler implements ValueHandler<String> {
             .replace("\\n", "\n")
             .replace("\\r", "\r")
             .replace("\\f", "\f")
-            .replace("\\'", "'")
             .replace("\\\"", "\"");
     }
     
@@ -48,7 +47,6 @@ public class StringHandler implements ValueHandler<String> {
             .replace("\n", "\\n")
             .replace("\r", "\\r")
             .replace("\f", "\\f")
-            .replace("'", "\\'")
             .replace("\"", "\\\"") + '"';
     }
     

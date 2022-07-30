@@ -3,7 +3,8 @@ number 5
 float 4.05F byte 2B short 32S double 66.002D
 long 1000000000000L
 list [ "hello" "there" ]
-boolean true boolean false value null
+boolean true boolean false
+value null
 map ( key "value" key "value" )
 map (
     hello "there"
@@ -12,3 +13,4 @@ map (
         "bla" "bla" "bla"
     ]
 )
+list [ ( key "value" ) ( key "value" ) ]
