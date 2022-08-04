@@ -12,6 +12,48 @@ class ValueHandler {
 
 }
 
+class NullHandler extends ValueHandler {
+
+    handle(data) {
+        return ("nul".includes(data.char));
+    }
+
+    result(data) {
+        return null;
+    }
+}
+
+class BooleanHandler extends ValueHandler {
+
+    handle(data) {
+        const char = data.char;
+        if (char === 't') data.boolean = true;
+        return ("truefals".includes(char));
+    }
+
+    result(data) {
+        return data.boolean ? true : false;
+    }
+}
+
+class NumberHandler extends ValueHandler {
+
+    handle(data) {
+        const char = data.char;
+        if (char === '-') data.negative = true;
+        if (char === '.') data.decimal = true;
+        if ("-.0123456789".includes(char)) {
+            data.value += char;
+        }
+        return ("-.0123456789DdHhFfLlSsBb".includes(char));
+    }
+
+    result(data) {
+        if (!!data.decimal) return parseFloat(data.value);
+        else return parseInt(data.value);
+    }
+}
+
 class StringHandler extends ValueHandler {
 
     handle(data) {
@@ -40,6 +82,10 @@ class Fern {
     constructor(data) {
         this.data = data;
         this.handlers['"'] = new StringHandler();
+        this.handlers['t'] = this.handlers['f'] = new BooleanHandler();
+        this.handlers['n'] = new NullHandler();
+        const numbers = new NumberHandler();
+        for (const char of '-0123456789') this.handlers[char] = numbers;
     }
 
     toObject() {
@@ -109,7 +155,7 @@ class Fern {
 
     readMap() {
         let state = 0, escape = false, handler = new ValueHandler();
-        let key = '', value = {char: '', value: '', result: null, fern: this};
+        let key = '', value = null;
         check: while (this._text.length > 0) {
             const char = this._text.charAt(0);
             this._text = this._text.substring(1);
@@ -135,6 +181,7 @@ class Fern {
                     if (/\s/.test(char)) continue;
                     if (char === '(' || char === '[') state = 5; // sub branch
                     else { // literal value
+                        value = {char: '', value: '', result: null, fern: this};
                         value.value = '';
                         value.char = char;
                         state = 3; // prepare for reading value
@@ -164,11 +211,13 @@ class Fern {
                     value.char = char;
                     if (handler.handle(value)) break;
                     this._current[key] = handler.result(value);
+                    value = null;
                     if (char === ')') break check;
                     else state = 0;
                     break;
             }
         }
+        if (value !== null) this._current[key] = handler.result(value);
         return this._current;
     }
 
@@ -178,29 +227,31 @@ class Fern {
     }
 
     static listToString(list) {
-        let string = '[ ';
+        let string = '';
         for (const value of list) {
             string += Fern.valueToString(value);
             string += ' ';
         }
-        string += ']';
         return string;
     }
 
     static objectToString(object) {
-        let string = '( ';
+        let string = '';
         for (let key in object) {
             string += key + ' ';
             string += Fern.valueToString(object[key]);
             string += ' ';
         }
-        string += ')';
         return string;
     }
 
     static valueToString(value) {
         if (typeof value === 'string' || value instanceof String) return '"' + value + '"';
-        return value + '';
+        if (value == null) return 'null';
+        if (value === true || value === false) return value + '';
+        if (!isNaN(value)) return value + '';
+        if (Array.isArray(value)) return '[ ' + Fern.listToString(value) + ']';
+        return '( ' + Fern.objectToString(value) +  ')';
     }
 
 }
