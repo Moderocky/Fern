@@ -18,8 +18,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Fern implements Closeable {
     
@@ -180,7 +178,8 @@ public class Fern implements Closeable {
                 }
                 case EXPECT_VALUE -> {
                     this.value = new StringBuilder();
-                    if (x == '(') map.put(key.toString(), this.read(map instanceof HashMap<?,?> ? new FernMap() : new TreeMap<>()));
+                    if (x == '(')
+                        map.put(key.toString(), this.read(map instanceof HashMap<?, ?> ? new FernMap() : new TreeMap<>()));
                     else if (x == '[') map.put(key.toString(), this.read(new ArrayList<>()));
                     else {
                         if (!handlers.containsKey((char) x))
