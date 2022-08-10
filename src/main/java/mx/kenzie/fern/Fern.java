@@ -174,7 +174,8 @@ public class Fern implements Closeable {
                         else escape = false;
                     }
                     if (key.length() < 1) throw new FernException("Found a zero-length key.");
-                    this.state = EXPECT_VALUE;
+                    if (key.length() > 2 && key.substring(0, 2).equals("//")) this.state = EXPECT_KEY;
+                    else this.state = EXPECT_VALUE;
                 }
                 case EXPECT_VALUE -> {
                     this.value = new StringBuilder();
