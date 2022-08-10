@@ -9,7 +9,7 @@ public class CommentTest {
     @Test
     public void decimals() {
         try (final Fern fern = Fern.in("""
-            thing 1D number 2.4 //hello byte 1B short 32S
+            thing 1D number 2.4 `hello there` byte `general kenobi` 1B short 32S
             """)) {
             final FernMap map = fern.readMap();
             assert map.get("thing") instanceof Double;

@@ -56,7 +56,7 @@ public class Fern implements Closeable {
     protected final Map<Character, Supplier<ValueHandler<?>>> handlers = new HashMap<>(DEFAULT_HANDLERS);
     protected final Set<ValueHandler<?>> reverse = new HashSet<>(DEFAULT_REVERSE);
     protected int state;
-    protected transient StringBuilder key, value;
+    protected transient StringBuilder key, value, comment;
     protected String indent;
     protected int level;
     
@@ -160,8 +160,23 @@ public class Fern implements Closeable {
             if (x == -1 || x == ')') {
                 this.state = END;
                 break;
-            }
+            } else if (x == '`') this.state--; // comment key = -1, comment value = 2
             switch (state) {
+                case -1, 2 -> {
+                    this.comment = new StringBuilder();
+                    boolean escape = false;
+                    while (true) {
+                        if (!escape) this.comment.append((char) x);
+                        x = this.readChar();
+                        if (x == -1) throw new FernException("Reached end of data reading comment '" + comment + "...'");
+                        else if (x == '\\' && !escape) escape = true;
+                        else if (!escape && x == '`') break;
+                        else escape = false;
+                    }
+                    if (comment.length() < 1) throw new FernException("Found a zero-length comment.");
+                    this.comment = null;
+                    this.state++; // back to where it should be
+                }
                 case EXPECT_KEY -> {
                     this.key = new StringBuilder();
                     boolean escape = false;
@@ -174,7 +189,6 @@ public class Fern implements Closeable {
                         else escape = false;
                     }
                     if (key.length() < 1) throw new FernException("Found a zero-length key.");
-                    if (key.length() > 2 && key.substring(0, 2).equals("//")) this.state = EXPECT_KEY;
                     else this.state = EXPECT_VALUE;
                 }
                 case EXPECT_VALUE -> {
