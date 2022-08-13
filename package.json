@@ -1,6 +1,6 @@
 {
   "name": "fern",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A minimalist storage and config file format.",
   "keywords": [
     "Fern",
