@@ -23,7 +23,7 @@ public class Fern implements Closeable {
     
     protected static final Map<Character, Supplier<ValueHandler<?>>> DEFAULT_HANDLERS;
     protected static final Set<ValueHandler<?>> DEFAULT_REVERSE;
-    protected static final byte END = 1, EXPECT_KEY = 0, EXPECT_VALUE = 3;
+    protected static final byte END = 0, EXPECT_KEY = 4, EXPECT_VALUE = 8;
     
     static {
         DEFAULT_HANDLERS = new HashMap<>();
@@ -54,9 +54,11 @@ public class Fern implements Closeable {
     protected final Reader reader;
     protected final Writer writer;
     protected final Map<Character, Supplier<ValueHandler<?>>> handlers = new HashMap<>(DEFAULT_HANDLERS);
+    protected final Map<String, Supplier<ValueHandler<?>>> specialHandlers = new HashMap<>();
+    protected final Map<Class<?>, ValueHandler<?>> specialReverse = new LinkedHashMap<>();
     protected final Set<ValueHandler<?>> reverse = new HashSet<>(DEFAULT_REVERSE);
     protected int state;
-    protected transient StringBuilder key, value, comment;
+    protected transient StringBuilder key, value, comment, identifier;
     protected String indent;
     protected int level;
     
@@ -138,6 +140,16 @@ public class Fern implements Closeable {
         list.addAll(fern.readList(true));
     }
     
+    public void registerHandler(Class<?> type, Supplier<ValueHandler<?>> handler) {
+        this.specialHandlers.put(type.getSimpleName(), handler);
+        this.specialReverse.put(type, handler.get());
+    }
+    
+    public void registerHandler(char c, Supplier<ValueHandler<?>> handler) {
+        this.handlers.put(c, handler);
+        this.reverse.add(handler.get());
+    }
+    
     public Fern setSeparator(char c) {
         this.separator = c;
         return this;
@@ -160,15 +172,16 @@ public class Fern implements Closeable {
             if (x == -1 || x == ')') {
                 this.state = END;
                 break;
-            } else if (x == '`') this.state--; // comment key = -1, comment value = 2
+            } else if (x == '`') this.state--; // comment shifts down
             switch (state) {
-                case -1, 2 -> {
+                case (EXPECT_KEY - 1), (EXPECT_VALUE - 1) -> {
                     this.comment = new StringBuilder();
                     boolean escape = false;
                     while (true) {
                         if (!escape) this.comment.append((char) x);
                         x = this.readChar();
-                        if (x == -1) throw new FernException("Reached end of data reading comment '" + comment + "...'");
+                        if (x == -1)
+                            throw new FernException("Reached end of data reading comment '" + comment + "...'");
                         else if (x == '\\' && !escape) escape = true;
                         else if (!escape && x == '`') break;
                         else escape = false;
@@ -192,26 +205,30 @@ public class Fern implements Closeable {
                     else this.state = EXPECT_VALUE;
                 }
                 case EXPECT_VALUE -> {
+                    final String key = this.key.toString(); // may get overridden
+                    final Supplier<ValueHandler<?>> identified;
+                    if (x == '<') {
+                        this.identifier = new StringBuilder();
+                        while ((x = this.readChar()) != '>') this.identifier.append((char) x);
+                        do x = this.readChar();
+                        while (Character.isWhitespace(x));
+                        identified = specialHandlers.get(identifier.toString().trim());
+                        this.identifier = null;
+                    } else identified = null;
                     this.value = new StringBuilder();
-                    if (x == '(')
-                        map.put(key.toString(), this.read(map instanceof HashMap<?, ?> ? new FernMap() : new TreeMap<>()));
-                    else if (x == '[') map.put(key.toString(), this.read(new ArrayList<>()));
-                    else {
-                        if (!handlers.containsKey((char) x))
-                            throw new FernException("Found no handler for value beginning '" + (char) x + "'");
+                    final Object parsed;
+                    if (identified != null) {
+                        final ValueHandler<?> handler = identified.get();
+                        while (handler.accept(value, (char) x) && (x = this.readChar()) != -1) ;
+                        parsed = handler.result(this.value);
+                    } else if (x == '(') parsed = this.read(new FernMap());
+                    else if (x == '[') parsed = this.read(new ArrayList<>());
+                    else if (handlers.containsKey((char) x)) {
                         final ValueHandler<?> handler = handlers.get((char) x).get();
-                        while (true) {
-                            final boolean result = handler.accept(value, (char) x);
-                            if (!result) break;
-                            x = this.readChar();
-                            if (x == -1) {
-                                this.state = END;
-                                break;
-                            }
-                        }
-                        final Object value = handler.result(this.value);
-                        map.put(key.toString(), value);
-                    }
+                        while (handler.accept(value, (char) x) && (x = this.readChar()) != -1) ;
+                        parsed = handler.result(this.value);
+                    } else throw new FernException("Found no handler for value beginning '" + (char) x + "'");
+                    map.put(key, parsed);
                     this.key = null;
                     this.value = null;
                     this.state = EXPECT_KEY;
@@ -251,15 +268,7 @@ public class Fern implements Closeable {
                 if (!handlers.containsKey((char) x))
                     throw new FernException("Found no handler for value beginning '" + (char) x + "'");
                 final ValueHandler<?> handler = handlers.get((char) x).get();
-                while (true) {
-                    final boolean result = handler.accept(value, (char) x);
-                    if (!result) break;
-                    x = this.readChar();
-                    if (x == -1) {
-                        this.state = END;
-                        break;
-                    }
-                }
+                while (handler.accept(value, (char) x) && (x = this.readChar()) != -1) ;
                 final Object value = handler.result(this.value);
                 list.add(value);
             }
@@ -295,7 +304,7 @@ public class Fern implements Closeable {
         this.writeValue(value);
     }
     
-    protected void writeKey(String key) {
+    public void writeKey(String key) {
         for (final char c : key.toCharArray()) {
             if (Character.isWhitespace(c)) this.writeChar('\\');
             else if (c == '\\') this.writeChar('\\');
@@ -322,11 +331,19 @@ public class Fern implements Closeable {
         }
     }
     
-    @SuppressWarnings("unchecked")
-    protected void writeValue(Object value) {
+    @SuppressWarnings({"unchecked", "all"})
+    public void writeValue(Object value) {
         final boolean pretty = indent != null;
         for (final ValueHandler handler : reverse) {
             if (!handler.accept(value)) continue;
+            this.writeString(handler.undo(value));
+            return;
+        }
+        for (final Map.Entry<Class<?>, ValueHandler<?>> entry : specialReverse.entrySet()) {
+            final ValueHandler handler = entry.getValue();
+            if (!handler.accept(value)) continue;
+            this.writeString('<' + entry.getKey().getSimpleName() + '>');
+            this.writeChar(separator);
             this.writeString(handler.undo(value));
             return;
         }

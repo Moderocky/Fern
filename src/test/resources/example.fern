@@ -6,11 +6,12 @@ list [ "hello" "there" ]
 boolean true boolean false
 value null
 map ( key "value" key "value" )
-map (
+map ( `comment`
     hello "there"
     map ( number 1 )
     list [
         "bla" "bla" "bla"
     ]
 )
+thing <MyType> raw_data_here
 list [ ( key "value" ) ( key "value" ) ]

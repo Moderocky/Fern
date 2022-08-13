@@ -1,5 +1,4 @@
-
-import {Fern, ValueHandler} from "../../main/javascript/fern.mjs";
+import {Fern} from "../../main/javascript/fern.mjs";
 
 { // simple
     const fern = new Fern('hello "there" general "kenobi"');

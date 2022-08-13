@@ -16,22 +16,38 @@ Fern ignores all whitespace, except for the single character that separates enti
 
 ## Data Types
 
-| Type    | Delimiter                              | Description                                                                               |
-|---------|----------------------------------------|-------------------------------------------------------------------------------------------|
-| Branch  | `()`                                   | A new sub-branch, a `key` `value` map.                                                    |
-| List    | `[]`                                   | A list.                                                                                   |
-| String  | `"text"`                               | Simple strings, supports both simple character escapes and multi-line content.            |
-| Integer | `100`                                  | Simple int-32.                                                                            |
-| Long    | `100L`                                 | Simple int-64. Suffix is only required to differentiate from an integer in small numbers. |
-| Short   | `100S`                                 | A short. Suffix is always required.                                                       |
-| Double  | `100.0D`                               | A double. Suffix is not required, unless the number is not a decimal.                     |
-| Float   | `0.5F`                                 | A floating point number. Suffix is always required.                                       |
-| Byte    | `13B`                                  | A byte. Suffix is always required.                                                        |
-| Null    | `null`                                 | A null-value.                                                                             |
-| Boolean | `true`                                 | A boolean true/false value.                                                               |
+| Type    | Delimiter | Description                                                                               |
+|---------|-----------|-------------------------------------------------------------------------------------------|
+| Branch  | `()`      | A new sub-branch, a `key` `value` map.                                                    |
+| List    | `[]`      | A list.                                                                                   |
+| String  | `"text"`  | Simple strings, supports both simple character escapes and multi-line content.            |
+| Integer | `100`     | Simple int-32.                                                                            |
+| Long    | `100L`    | Simple int-64. Suffix is only required to differentiate from an integer in small numbers. |
+| Short   | `100S`    | A short. Suffix is always required.                                                       |
+| Double  | `100.0D`  | A double. Suffix is not required, unless the number is not a decimal.                     |
+| Float   | `0.5F`    | A floating point number. Suffix is always required.                                       |
+| Byte    | `13B`     | A byte. Suffix is always required.                                                        |
+| Null    | `null`    | A null-value.                                                                             |
+| Boolean | `true`    | A boolean true/false value.                                                               |
+| Insight | `<Type>`  | A type insight provided by a third-party library.                                         |
 
 Domain-specific data types can be added by custom parser implementations by adding a new `ValueHandler` - they require
-only a recognisable starting character.
+only a recognisable identifier. \
+An example would be a `Bird` class. A parser can register `<Bird>` as a special identifier,
+which would pass the subsequent value to the desired value handler.
+
+## Comments
+Some fern implementations support a style of comment marked by a <code>&grave;</code> backtick character.
+
+These comments are an entity like keys and values and so require some separation.
+
+```fern
+key `comment` value
+key value `comment`
+`this is a
+really long comment`
+```
+
 
 ## Examples
 

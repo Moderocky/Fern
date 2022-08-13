@@ -19,11 +19,27 @@ folds: [
 ]
 
 patterns: [
+    { include: '#comment' }
+    { include: '#identifier' }
     { include: '#value' }
     { include: '#key' }
 ]
 
 repository:
+    comment: {
+        begin: '`'
+        end: '`'
+        name: 'comment.block'
+    }
+    identifier: patterns: [
+        {
+            match: "(<)(.+)(>)"
+            captures:
+                1: name: 'markup.bold'
+                2: name: 'entity.name.function'
+                3: name: 'markup.bold'
+        }
+    ]
     key: patterns: [
         {
             match: "(?<=\\s|^)\\b(\\S+?)(?=\\s)"

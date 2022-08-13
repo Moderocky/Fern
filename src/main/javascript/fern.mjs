@@ -1,4 +1,3 @@
-
 class ValueHandler {
 
     handle(data) {
@@ -79,6 +78,10 @@ class StringHandler extends ValueHandler {
 class Fern {
     handlers = {};
     data;
+    _text = '';
+    _object = {};
+    _current = this._object;
+
     constructor(data) {
         this.data = data;
         this.handlers['"'] = new StringHandler();
@@ -86,6 +89,34 @@ class Fern {
         this.handlers['n'] = new NullHandler();
         const numbers = new NumberHandler();
         for (const char of '-0123456789') this.handlers[char] = numbers;
+    }
+
+    static listToString(list) {
+        let string = '';
+        for (const value of list) {
+            string += Fern.valueToString(value);
+            string += ' ';
+        }
+        return string;
+    }
+
+    static objectToString(object) {
+        let string = '';
+        for (let key in object) {
+            string += key + ' ';
+            string += Fern.valueToString(object[key]);
+            string += ' ';
+        }
+        return string;
+    }
+
+    static valueToString(value) {
+        if (typeof value === 'string' || value instanceof String) return '"' + value + '"';
+        if (value == null) return 'null';
+        if (value === true || value === false) return value + '';
+        if (!isNaN(value)) return value + '';
+        if (Array.isArray(value)) return '[ ' + Fern.listToString(value) + ']';
+        return '( ' + Fern.objectToString(value) + ')';
     }
 
     toObject() {
@@ -99,10 +130,6 @@ class Fern {
         if (Array.isArray(this.data)) return Fern.listToString(this.data);
         return Fern.objectToString(this.data);
     }
-
-    _text = '';
-    _object = {};
-    _current = this._object;
 
     readList() {
         let state = 0, handler = new ValueHandler();
@@ -224,34 +251,6 @@ class Fern {
     stringToObject(string) {
         this._text = string;
         return this.readMap();
-    }
-
-    static listToString(list) {
-        let string = '';
-        for (const value of list) {
-            string += Fern.valueToString(value);
-            string += ' ';
-        }
-        return string;
-    }
-
-    static objectToString(object) {
-        let string = '';
-        for (let key in object) {
-            string += key + ' ';
-            string += Fern.valueToString(object[key]);
-            string += ' ';
-        }
-        return string;
-    }
-
-    static valueToString(value) {
-        if (typeof value === 'string' || value instanceof String) return '"' + value + '"';
-        if (value == null) return 'null';
-        if (value === true || value === false) return value + '';
-        if (!isNaN(value)) return value + '';
-        if (Array.isArray(value)) return '[ ' + Fern.listToString(value) + ']';
-        return '( ' + Fern.objectToString(value) +  ')';
     }
 
 }
