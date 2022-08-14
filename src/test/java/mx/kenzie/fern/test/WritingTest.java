@@ -65,4 +65,16 @@ public class WritingTest {
         assert value.equals("{hello there=general kenobi}") : value;
     }
     
+    @Test
+    public void object() {
+        class Thing {
+            final int thing = 10;
+            final short age = 23;
+            final String name = "hello";
+            final byte height = 10;
+        }
+        final String string = Fern.out(new Thing(), null);
+        assert string.equals("thing 10 age 23S height 10B name \"hello\"") : string;
+    }
+    
 }

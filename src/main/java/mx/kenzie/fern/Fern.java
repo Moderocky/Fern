@@ -269,8 +269,7 @@ public class Fern implements Closeable {
                     throw new FernException("Found no handler for value beginning '" + (char) x + "'");
                 final ValueHandler<?> handler = handlers.get((char) x).get();
                 while (handler.accept(value, (char) x) && (x = this.readChar()) != -1) ;
-                final Object value = handler.result(this.value);
-                list.add(value);
+                list.add(handler.result(this.value));
             }
             this.value = null;
             this.state = EXPECT_VALUE;
@@ -478,7 +477,9 @@ public class Fern implements Closeable {
                     if (expected.isPrimitive()) {
                         if (value instanceof Boolean boo) field.setBoolean(object, boo.booleanValue());
                         else if (value instanceof Number number) {
-                            if (expected == int.class) field.setInt(object, number.intValue());
+                            if (expected == byte.class) field.setByte(object, number.byteValue());
+                            else if (expected == short.class) field.setShort(object, number.shortValue());
+                            else if (expected == int.class) field.setInt(object, number.intValue());
                             else if (expected == long.class) field.setLong(object, number.longValue());
                             else if (expected == double.class) field.setDouble(object, number.doubleValue());
                             else if (expected == float.class) field.setFloat(object, number.floatValue());

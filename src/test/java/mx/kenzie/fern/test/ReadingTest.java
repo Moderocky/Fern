@@ -43,8 +43,10 @@ public class ReadingTest {
             thing 1D number 2.4 byte 1B short 32S
             """)) {
             final FernMap map = fern.readMap();
-            assert map.get("thing") instanceof Double;
-            assert map.get("number") instanceof Double;
+            assert map.get("thing") instanceof Double d && d == 1;
+            assert map.get("number") instanceof Double d && d == 2.4;
+            assert map.get("byte") instanceof Byte b && b == 1;
+            assert map.get("short") instanceof Short s && s == 32;
             assert map.toString().equals("{thing=1.0, number=2.4, byte=1, short=32}") : map;
         }
     }
@@ -101,6 +103,23 @@ public class ReadingTest {
             final FernMap map = fern.readMap();
             assert map.toString().equals("{empty={}, list=[{test=1}, {test=2}]}") : map;
         }
+    }
+    
+    @Test
+    public void object() {
+        class Thing {
+            int thing;
+            short age;
+            String name;
+            byte height;
+        }
+        final Fern fern = Fern.in("thing 10 age 23S height 10B name \"hello\"");
+        final Thing thing = fern.toObject(new Thing());
+        assert thing.thing == 10;
+        assert thing.age == 23;
+        assert thing.height == 10;
+        assert thing.name.equals("hello");
+        fern.close();
     }
     
 }

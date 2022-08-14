@@ -30,12 +30,14 @@ public class IdentifierTest {
     @Test
     public void object() {
         final StringWriter writer = new StringWriter();
-        class Thing { final Blob blob = new Blob(); }
+        class Thing {
+            final Blob blob = new Blob();
+        }
         try (final Fern fern = new Fern(null, writer)) {
             fern.registerHandler(Blob.class, BlobHandler::new);
             fern.write(new Thing());
         }
-        assert writer.toString().equals("blob <Blob> 0"): writer;
+        assert writer.toString().equals("blob <Blob> 0") : writer;
     }
     
 }
