@@ -384,6 +384,10 @@ public class Fern implements Closeable {
         } else throw new FernException("No handler registered for '" + value.getClass().getSimpleName() + "'");
     }
     
+    protected boolean canDeconstruct(Object object) {
+        for (final ValueHandler<?> handler : specialReverse.values()) if (handler.accept(object)) return true;
+        return false;
+    }
     
     protected void write(Object object, Class<?> type, Map<String, Object> map) {
         final Set<Field> fields = new HashSet<>();
@@ -408,6 +412,7 @@ public class Fern implements Closeable {
                 else if (value instanceof Number) map.put(key, value);
                 else if (value instanceof Boolean) map.put(key, value);
                 else if (value instanceof List<?>) map.put(key, value);
+                else if (this.canDeconstruct(value)) map.put(key, value);
                 else if (expected.isArray()) {
                     final List<Object> child = new ArrayList<>();
                     map.put(key, child);
