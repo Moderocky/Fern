@@ -412,6 +412,7 @@ public class Fern implements Closeable {
                 else if (value instanceof Boolean) map.put(key, value);
                 else if (value instanceof List<?>) map.put(key, value);
                 else if (this.canDeconstruct(value)) map.put(key, value);
+                else if (value instanceof Enum<?> num) map.put(key, num.name());
                 else if (expected.isArray()) {
                     final List<Object> child = new ArrayList<>();
                     map.put(key, child);
@@ -485,6 +486,7 @@ public class Fern implements Closeable {
                             else if (expected == float.class) field.setFloat(object, number.floatValue());
                         }
                     } else if (value == null) field.set(object, null);
+                    else if (expected.isEnum()) field.set(object, this.makeEnum(expected, value));
                     else if (expected.isAssignableFrom(value.getClass())) field.set(object, value);
                     else if (value instanceof Map<?, ?> child) {
                         final Object sub, existing = field.get(object);
@@ -502,6 +504,11 @@ public class Fern implements Closeable {
             }
         }
         return object;
+    }
+    
+    @SuppressWarnings("all")
+    private Object makeEnum(Class<?> type, Object value) {
+        return Enum.valueOf((Class) type, value.toString());
     }
     
     @SuppressWarnings({"all"})
