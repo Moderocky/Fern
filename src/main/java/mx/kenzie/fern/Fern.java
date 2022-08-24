@@ -585,7 +585,11 @@ public class Fern implements Closeable {
                 final Object value = objects[i];
                 Array.setFloat(object, i, ((Number) value).floatValue());
             }
-        } else {
+        } else if (component.isEnum()) for (int i = 0; i < objects.length; i++) {
+            final Object value = this.makeEnum(component, objects[i]);
+            Array.set(object, i, value);
+        }
+        else {
             final Object[] array = (Object[]) object;
             for (int i = 0; i < objects.length; i++) {
                 final Object value = objects[i];
@@ -624,6 +628,7 @@ public class Fern implements Closeable {
         if (value instanceof String) return value;
         if (value instanceof Number) return value;
         if (value instanceof Boolean) return value;
+        if (value instanceof Enum<?> num) return num.name();
         if (value.getClass().isArray()) {
             final List<Object> list = new ArrayList<>();
             this.deconstructArray(value, component.getComponentType(), list, false);
