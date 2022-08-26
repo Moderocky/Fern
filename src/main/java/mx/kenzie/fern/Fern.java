@@ -413,6 +413,7 @@ public class Fern implements Closeable {
                 else if (value instanceof List<?>) map.put(key, value);
                 else if (this.canDeconstruct(value)) map.put(key, value);
                 else if (value instanceof Enum<?> num) map.put(key, num.name());
+                else if (value instanceof UUID uuid) map.put(key, uuid.toString());
                 else if (expected.isArray()) {
                     final List<Object> child = new ArrayList<>();
                     map.put(key, child);
@@ -487,6 +488,8 @@ public class Fern implements Closeable {
                         }
                     } else if (value == null) field.set(object, null);
                     else if (expected.isEnum()) field.set(object, this.makeEnum(expected, value));
+                    else if (expected == UUID.class && value instanceof String text)
+                        field.set(object, UUID.fromString(text));
                     else if (expected.isAssignableFrom(value.getClass())) field.set(object, value);
                     else if (value instanceof Map<?, ?> child) {
                         final Object sub, existing = field.get(object);
@@ -589,6 +592,9 @@ public class Fern implements Closeable {
             final Object value = this.makeEnum(component, objects[i]);
             Array.set(object, i, value);
         }
+        else if (component == UUID.class) for (int i = 0; i < objects.length; i++) {
+            Array.set(object, i, UUID.fromString(objects[i].toString()));
+        }
         else {
             final Object[] array = (Object[]) object;
             for (int i = 0; i < objects.length; i++) {
@@ -629,6 +635,7 @@ public class Fern implements Closeable {
         if (value instanceof Number) return value;
         if (value instanceof Boolean) return value;
         if (value instanceof Enum<?> num) return num.name();
+        if (value instanceof UUID uuid) return uuid.toString();
         if (value.getClass().isArray()) {
             final List<Object> list = new ArrayList<>();
             this.deconstructArray(value, component.getComponentType(), list, false);
