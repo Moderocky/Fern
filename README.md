@@ -37,6 +37,7 @@ An example would be a `Bird` class. A parser can register `<Bird>` as a special 
 which would pass the subsequent value to the desired value handler.
 
 ## Comments
+
 Some fern implementations support a style of comment marked by a <code>&grave;</code> backtick character.
 
 These comments are an entity like keys and values and so require some separation.
@@ -47,7 +48,6 @@ key value `comment`
 `this is a
 really long comment`
 ```
-
 
 ## Examples
 
@@ -88,7 +88,9 @@ map ( key "value" thing 66 ) list [ 1 2 3 ]
 ```
 
 ## Maven Information
+
 ```xml
+
 <repository>
     <id>kenzie</id>
     <name>Kenzie's Repository</name>
@@ -97,12 +99,22 @@ map ( key "value" thing 66 ) list [ 1 2 3 ]
 ``` 
 
 ```xml
+
 <dependency>
     <groupId>mx.kenzie</groupId>
     <artifactId>fern</artifactId>
     <version>2.0.0</version>
 </dependency>
 ```
+
+## Binary Data
+
+The Java implementation of Fern contains a binary data format for more compressed values.
+Naturally, using this eliminates Fern's potential as an editable configuration format.
+
+The binary format is supplied as a simple way to compress the internal data.
+The `BinaryFern` object is fairly interchangeable with the regular `Fern` but has no support for third-party handlers:
+only the built-in data types are supported.
 
 ## Adding Types
 

@@ -25,6 +25,7 @@ public class Fern implements Closeable {
     protected static final Set<ValueHandler<?>> DEFAULT_REVERSE;
     protected static final byte END = 0, EXPECT_KEY = 4, EXPECT_VALUE = 8;
     
+    
     static {
         DEFAULT_HANDLERS = new HashMap<>();
         DEFAULT_HANDLERS.put('"', StringHandler::new);
@@ -64,20 +65,35 @@ public class Fern implements Closeable {
     
     protected char separator = ' ';
     
-    public Fern(InputStream input, OutputStream output) {
-        if (input != null) reader = new InputStreamReader(input);
-        else reader = null;
-        if (output != null) writer = new OutputStreamWriter(output);
-        else writer = null;
-    }
-    
-    public Fern(File file) throws IOException {
-        this(new FileReader(file), new FileWriter(file));
+    protected Fern() {
+        this((Reader) null, null);
     }
     
     public Fern(Reader reader, Writer writer) {
         this.reader = reader;
         this.writer = writer;
+    }
+    
+    public Fern(InputStream input, OutputStream output) {
+        this(input != null
+            ? new InputStreamReader(input) : null, output != null
+            ? new OutputStreamWriter(output) : null);
+    }
+    
+    public Fern(InputStream input) {
+        this(input != null ? new InputStreamReader(input) : null, null);
+    }
+    
+    public Fern(OutputStream output) {
+        this(null, output != null ? new OutputStreamWriter(output) : null);
+    }
+    
+    public Fern(Reader reader) {
+        this(reader, null);
+    }
+    
+    public Fern(Writer writer) {
+        this(null, writer);
     }
     
     public static Fern in(File file) throws FileNotFoundException {
@@ -106,6 +122,10 @@ public class Fern implements Closeable {
             fern.write(map, indent, 0);
         }
         return writer.toString();
+    }
+    
+    public static void trans(Map<String, Object> map, Object object) {
+        new Fern().toObject(object, object.getClass(), map);
     }
     
     public static void trans(Map<?, ?> map, OutputStream stream) {
