@@ -160,7 +160,7 @@ public class BinaryFern extends Fern {
         final FernMap map = new FernMap();
         final byte end = (byte) DataType.END.ordinal();
         final DataType[] types = DataType.values();
-        for (byte data = this.read(); data != end; data = this.read()) {
+        for (byte data = this.read(); data != end && data != -1; data = this.read()) {
             final DataType type = types[data];
             final String key = this.readString();
             final Object value = this.readObject(type);
